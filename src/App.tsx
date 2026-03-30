@@ -2,6 +2,7 @@ import {
   startTransition,
   useEffect,
   useEffectEvent,
+  useRef,
   useState,
   type CSSProperties,
 } from "react";
@@ -261,6 +262,7 @@ function App() {
   const [session, setSession] = useState<SessionState>(() => hydrateSession());
   const [celebration, setCelebration] = useState<CelebrationState | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const settingsDialogRef = useRef<HTMLDivElement | null>(null);
 
   const isRunning = session.status === "running";
   const isPaused = session.status === "paused";
@@ -418,6 +420,9 @@ function App() {
     }
 
     const originalOverflow = document.body.style.overflow;
+    const focusFrame = window.requestAnimationFrame(() => {
+      settingsDialogRef.current?.focus();
+    });
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsSettingsOpen(false);
@@ -428,6 +433,7 @@ function App() {
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = originalOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -703,10 +709,12 @@ function App() {
         <section className="settings-modal-backdrop" onClick={closeSettings}>
           <div
             id="settings-modal"
+            ref={settingsDialogRef}
             className="settings-modal panel"
             role="dialog"
             aria-modal="true"
             aria-labelledby={SETTINGS_MODAL_TITLE_ID}
+            tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
           >
             <div className="settings-modal-header">
@@ -726,7 +734,6 @@ function App() {
                 <select
                   value={session.focusMinutes}
                   disabled={!canEditDurations}
-                  autoFocus={canEditDurations}
                   onChange={(event) =>
                     updateFocusMinutes(Number(event.currentTarget.value))
                   }
