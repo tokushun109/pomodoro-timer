@@ -46,6 +46,10 @@
   padding: 0.5rem;
 }
 
+.topbar-brand {
+  min-width: 0;
+}
+
 .topbar-actions {
   display: flex;
   flex-wrap: wrap;
@@ -69,6 +73,10 @@
   gap: 0.75rem;
 }
 
+.panel-status {
+  display: none;
+}
+
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -87,6 +95,10 @@
     transform 180ms ease,
     box-shadow 180ms ease,
     background-color 180ms ease;
+}
+
+.icon-button-label {
+  white-space: nowrap;
 }
 
 .icon-button:hover {
@@ -118,6 +130,7 @@
   font-size: 0.92rem;
   font-weight: 600;
   backdrop-filter: blur(20px);
+  white-space: nowrap;
 }
 
 .status-pill.active {
@@ -279,6 +292,7 @@
   --timer-accent: var(--focus-accent);
   position: relative;
   display: grid;
+  container-type: inline-size;
   place-items: center;
   width: min(26rem, 100%);
   aspect-ratio: 1;
@@ -313,6 +327,8 @@
   position: relative;
   z-index: 1;
   display: grid;
+  width: min(100%, 82cqw);
+  min-width: 0;
   gap: 0.35rem;
   place-items: center;
   text-align: center;
@@ -343,13 +359,15 @@
 
 .timer-value {
   margin: 0;
+  max-width: 100%;
   color: var(--text-strong);
   font-family: var(--font-body);
-  font-size: clamp(4.2rem, 11vw, 7rem);
+  font-size: clamp(2.5rem, 30cqw, 7rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 0.9;
   letter-spacing: -0.03em;
+  white-space: nowrap;
 }
 
 .timer-subcopy {
@@ -402,34 +420,6 @@
 .icon-button:focus-visible {
   outline: 3px solid rgb(221 107 66 / 25%);
   outline-offset: 3px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
-  width: min(100%, 28rem);
-  margin: 0;
-}
-
-.stats-grid div {
-  padding: 1rem;
-  border-radius: 1.3rem;
-  background: rgb(255 255 255 / 0.82);
-  text-align: center;
-}
-
-.stats-grid dt {
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.stats-grid dd {
-  margin: 0.35rem 0 0;
-  color: var(--text-strong);
-  font-size: 1.15rem;
-  font-weight: 700;
 }
 
 .celebration-overlay {
@@ -542,10 +532,6 @@
     padding-bottom: 1.8rem;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
 }
 
 @media (max-width: 640px) {
@@ -559,6 +545,20 @@
     border-radius: 1.5rem;
   }
 
+  .topbar {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .topbar-brand {
+    flex: 1 1 auto;
+  }
+
+  .eyebrow {
+    margin: 0;
+  }
+
   .timer-ring {
     width: 100%;
   }
@@ -569,22 +569,63 @@
   }
 
   .topbar-actions {
-    justify-content: flex-start;
+    width: auto;
+    margin-left: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.45rem;
   }
 
   .status-cluster {
-    width: auto;
-    flex: 0 1 auto;
-    gap: 0.6rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+  }
+
+  .status-pill,
+  .topbar-actions > .icon-button {
+    min-height: 2.45rem;
+    font-size: clamp(0.72rem, 3vw, 0.82rem);
+  }
+
+  .status-pill {
+    padding-inline: 0.65rem;
   }
 
   .topbar-actions > .icon-button {
-    width: auto;
-    min-height: 2.7rem;
-    padding-inline: 0.85rem;
+    width: 2.45rem;
+    padding-inline: 0;
+    gap: 0;
     flex: 0 0 auto;
+  }
+
+  .topbar-actions > .icon-button .gear-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .topbar-actions > .icon-button .icon-button-label {
+    display: none;
+  }
+
+  .topbar-status {
+    display: none;
+  }
+
+  .panel-status {
+    display: flex;
+    width: 100%;
+    margin-top: 0.85rem;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+  }
+
+  .mode-copy {
+    font-size: clamp(0.88rem, 3vw, 0.94rem);
+    line-height: 1.55;
   }
 
   .modal-actions {
@@ -595,6 +636,333 @@
   .modal-actions button {
     width: 100%;
   }
+}
+
+@media (max-width: 640px) and (orientation: landscape) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+
+  .topbar-brand {
+    flex: none;
+  }
+
+  .topbar-actions {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .topbar-status {
+    display: flex;
+  }
+
+  .panel-status {
+    display: none;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.75rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .app {
+    padding: 0.75rem;
+  }
+
+  .panel,
+  .celebration-shell,
+  .settings-modal {
+    border-radius: 1.25rem;
+  }
+
+  .topbar {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.25rem;
+  }
+
+  .topbar-actions {
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .status-cluster {
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-size: 0.78rem;
+  }
+
+  .icon-button,
+  .status-pill {
+    min-height: 2.4rem;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.84rem;
+  }
+
+  .layout {
+    margin-top: 0.5rem;
+  }
+
+  .timer-panel {
+    width: 100%;
+    min-height: clamp(15rem, calc(100svh - 6rem), 19rem);
+    justify-items: stretch;
+    grid-template-columns: minmax(0, 1fr) clamp(10rem, 48svh, 15rem);
+    grid-template-areas:
+      'summary timer'
+      'mode timer'
+      'actions timer';
+    align-items: center;
+    align-content: center;
+    gap: 0.75rem 1rem;
+    padding: 1rem;
+  }
+
+  .timer-toolbar {
+    grid-area: summary;
+    justify-content: flex-start;
+  }
+
+  .preset-summary,
+  .mode-row {
+    justify-items: flex-start;
+    text-align: left;
+  }
+
+  .preset-summary {
+    gap: 0.5rem;
+  }
+
+  .panel-title {
+    font-size: 1rem;
+  }
+
+  .preset-strip {
+    gap: 0.5rem;
+  }
+
+  .preset-strip span {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.82rem;
+  }
+
+  .mode-row {
+    grid-area: mode;
+    gap: 0.25rem;
+  }
+
+  .mode-copy {
+    max-width: none;
+    font-size: 0.9rem;
+  }
+
+  .timer-ring {
+    grid-area: timer;
+    width: clamp(10rem, 48svh, 15rem);
+    justify-self: center;
+    padding: 0.75rem;
+  }
+
+  .timer-ring::after {
+    inset: 0.75rem;
+  }
+
+  .timer-caption {
+    min-height: 2rem;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.84rem;
+  }
+
+  .timer-value {
+    font-size: clamp(2.4rem, 30cqw, 3.8rem);
+  }
+
+  .timer-subcopy {
+    font-size: 0.85rem;
+  }
+
+  .actions {
+    grid-area: actions;
+    justify-content: flex-start;
+    gap: 0.65rem;
+    width: 100%;
+  }
+
+  .primary-button,
+  .secondary-button {
+    min-height: 2.9rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .actions button,
+  .modal-actions button {
+    width: auto;
+  }
+
+  .settings-modal-backdrop,
+  .celebration-overlay {
+    align-items: flex-start;
+    overflow: auto;
+    padding: 0.5rem;
+  }
+
+  .settings-modal {
+    width: min(100%, 42rem);
+    max-height: calc(100svh - 1rem);
+    overflow: auto;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .settings-modal-header,
+  .panel-heading {
+    gap: 0.35rem;
+  }
+
+  .panel-copy,
+  .note-copy,
+  .field span,
+  .celebration-subcopy {
+    font-size: 0.85rem;
+  }
+
+  .field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .field {
+    gap: 0.35rem;
+  }
+
+  .field select {
+    min-height: 2.7rem;
+    border-radius: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  .note-card {
+    padding: 0.85rem 0.95rem;
+  }
+
+  .note-title {
+    margin-bottom: 0.2rem;
+    font-size: 0.88rem;
+  }
+
+  .celebration-shell {
+    width: min(100%, 32rem);
+    gap: 0.75rem;
+    padding: 1rem 1.1rem;
+  }
+
+  .celebration-message {
+    font-size: clamp(1rem, 3.2vw, 1.2rem);
+    line-height: 1.7;
+  }
+
+  .celebration-subcopy {
+    line-height: 1.55;
+  }
+
+  .celebration-metrics {
+    gap: 0.5rem;
+  }
+
+  .celebration-metrics span {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.86rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 340px) {
+  .app {
+    padding: 0.5rem;
+  }
+
+  .topbar {
+    gap: 0.5rem;
+  }
+
+  .icon-button,
+  .status-pill {
+    min-height: 2.2rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .layout {
+    margin-top: 0.35rem;
+  }
+
+  .panel-title {
+    font-size: 0.94rem;
+  }
+
+  .preset-strip span {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .mode-copy,
+  .panel-copy,
+  .note-copy,
+  .field span,
+  .celebration-subcopy {
+    font-size: 0.8rem;
+  }
+
+  .timer-panel {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) clamp(8rem, 36svh, 12rem);
+    align-content: start;
+    gap: 0.5rem 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .timer-ring {
+    width: clamp(8rem, 36svh, 12rem);
+    padding: 0.6rem;
+  }
+
+  .timer-ring::after {
+    inset: 0.6rem;
+  }
+
+  .timer-caption {
+    min-height: 1.75rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .timer-value {
+    font-size: clamp(2.2rem, 30cqw, 3.3rem);
+  }
+
+  .timer-subcopy {
+    font-size: 0.8rem;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+
+  .primary-button,
+  .secondary-button {
+    min-height: 2.5rem;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.84rem;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

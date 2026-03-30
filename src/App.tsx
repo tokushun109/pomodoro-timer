@@ -577,27 +577,33 @@ function App() {
         : "肩の力を抜いて、次の集中に備えましょう。";
 
   const wakeLockLabel = wakeLock.active ? "画面保持: ON" : "画面保持: OFF";
+  const statusPills = (
+    <>
+      <span className={`status-pill ${wakeLock.active ? "active" : "inactive"}`}>
+        {wakeLockLabel}
+      </span>
+      <span className="status-pill subtle">完了: {session.completedFocuses}回</span>
+    </>
+  );
 
   return (
     <main className={`app ${isCelebrating ? "is-celebrating" : ""}`}>
       <header className="topbar">
-        <div>
+        <div className="topbar-brand">
           <p className="eyebrow">Pomodoro Timer</p>
         </div>
         <div className="topbar-actions">
-          <div className="status-cluster" role="status" aria-live="polite">
-            <span
-              className={`status-pill ${wakeLock.active ? "active" : "inactive"}`}
-            >
-              {wakeLockLabel}
-            </span>
-            <span className="status-pill subtle">
-              完了した集中 {session.completedFocuses} 回
-            </span>
+          <div
+            className="status-cluster topbar-status"
+            role="status"
+            aria-live="polite"
+          >
+            {statusPills}
           </div>
           <button
             type="button"
             className="icon-button"
+            aria-label="設定"
             aria-haspopup="dialog"
             aria-expanded={isSettingsOpen}
             aria-controls="settings-modal"
@@ -625,7 +631,7 @@ function App() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>設定</span>
+            <span className="icon-button-label">設定</span>
           </button>
         </div>
       </header>
@@ -686,17 +692,11 @@ function App() {
             </button>
           </div>
 
-          <dl className="stats-grid">
-            <div>
-              <dt>次の休憩</dt>
-              <dd>{session.breakMinutes} 分</dd>
-            </div>
-            <div>
-              <dt>集中完了数</dt>
-              <dd>{session.completedFocuses} 回</dd>
-            </div>
-          </dl>
         </section>
+
+        <div className="status-cluster panel-status" role="status" aria-live="polite">
+          {statusPills}
+        </div>
       </section>
 
       {isSettingsOpen && (
